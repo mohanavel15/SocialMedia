@@ -27,11 +27,14 @@ func main() {
 
 	app := fiber.New()
 
-	app.Post("/register", restapi.Register)
-	app.Post("/login", restapi.Login)
-	app.Post("/logout", restapi.Logout)
+	app.Post("/api/register", restapi.Register)
+	app.Post("/api/login", restapi.Login)
+	app.Post("/api/logout", restapi.Logout)
 
-	app.Get("/users/:username", restapi.GetUser)
+	app.Get("/api/users/:username", restapi.GetUser)
+
+	app.Static("/assets", "./web/dist/assets")
+	app.Static("*", "./web/dist/index.html")
 
 	go log.Fatalln(app.Listen(SERVER_URI))
 
