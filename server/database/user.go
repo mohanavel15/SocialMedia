@@ -10,7 +10,10 @@ import (
 
 type User struct {
 	ID         primitive.ObjectID `bson:"_id"`
+	Name       string             `bson:"name"`
 	Username   string             `bson:"username"`
+	Bio        string             `bson:"bio"`
+	Verified   bool               `bson:"verified"`
 	Password   []byte             `bson:"password"`
 	CreatedAt  int64              `bson:"created_at"`
 	LastLogout int64              `bson:"last_logout"`

@@ -54,7 +54,10 @@ func Register(ctx *fiber.Ctx) error {
 
 	user := database.User{
 		ID:         primitive.NewObjectID(),
+		Name:       username,
 		Username:   username,
+		Bio:        "",
+		Verified:   false,
 		Password:   hashedPassword,
 		CreatedAt:  time.Now().Unix(),
 		LastLogout: 0,
