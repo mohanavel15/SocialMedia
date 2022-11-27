@@ -37,7 +37,6 @@ func GetUserPosts(ctx *fiber.Ctx) error {
 }
 
 func GetPost(ctx *fiber.Ctx) error {
-	author_username := ctx.Params("username")
 	post_id_str := ctx.Params("post_id")
 
 	post_id, err := primitive.ObjectIDFromHex(post_id_str)
@@ -45,12 +44,7 @@ func GetPost(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}
 
-	user, status := database.GetUserByUsername(author_username)
-	if status != http.StatusOK {
-		return ctx.SendStatus(http.StatusBadRequest)
-	}
-
-	status, post := database.GetPostByID(user.ID, post_id)
+	status, post := database.GetPostByID(post_id)
 	if status != http.StatusOK {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}
@@ -92,15 +86,9 @@ func CreatePost(ctx *fiber.Ctx) error {
 }
 
 func DeletePost(ctx *fiber.Ctx) error {
+	post_id_str := ctx.Params("post_id")
 	user, status := GetUserFromContext(ctx)
 	if status != http.StatusOK {
-		return ctx.SendStatus(http.StatusForbidden)
-	}
-
-	author_username := ctx.Params("username")
-	post_id_str := ctx.Params("post_id")
-
-	if author_username != user.Username {
 		return ctx.SendStatus(http.StatusForbidden)
 	}
 
@@ -109,11 +97,37 @@ func DeletePost(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}
 
-	status, post := database.GetPostByID(user.ID, post_id)
+	status, post := database.GetPostByID(post_id)
 	if status != http.StatusOK {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}
 
-	status = database.DeletePostByID(user.ID, post.ID)
+	if post.AuthorID != user.ID {
+		return ctx.SendStatus(http.StatusForbidden)
+	}
+
+	status = database.DeletePostByID(post.ID)
 	return ctx.SendStatus(status)
+}
+
+func GetReplies(ctx *fiber.Ctx) error {
+	post_id_str := ctx.Params("post_id")
+
+	post_id, err := primitive.ObjectIDFromHex(post_id_str)
+	if err != nil {
+		return ctx.SendStatus(http.StatusBadRequest)
+	}
+
+	limit, err := strconv.ParseInt(ctx.Query("limit"), 10, 64)
+	if err != nil {
+		limit = 25
+	}
+
+	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
+	if err != nil {
+		offset = 1
+	}
+
+	posts := database.GetReplies(post_id, limit, offset)
+	return ctx.JSON(posts)
 }

@@ -31,7 +31,25 @@ func main() {
 	app.Post("/api/login", restapi.Login)
 	app.Post("/api/logout", restapi.Logout)
 
+	app.Get("/api/feed", restapi.GetFeed) // requires authenticated
+	app.Get("/api/feed/global", restapi.GetGlobalFeed)
+
 	app.Get("/api/users/:username", restapi.GetUser)
+	app.Get("/api/users/:username/likes", restapi.GetUserLikes)
+	app.Get("/api/users/:username/posts", restapi.GetUserPosts)
+	app.Post("/api/users/:username/posts", restapi.CreatePost) // requires authenticated
+
+	// app.Post("/api/users/:username/follow", restapi.CreatePost)
+	// app.Get("/api/users/:username/following", restapi.CreatePost)
+	// app.Get("/api/users/:username/followers", restapi.CreatePost)
+
+	app.Get("/api/posts/:post_id", restapi.GetPost)
+	app.Delete("/api/posts/:post_id", restapi.DeletePost) // requires authenticated
+	app.Get("/api/posts/:post_id/replies", restapi.GetReplies)
+
+	// app.Get("/api/posts/:post_id/likes", restapi.GetUserPosts)
+	// app.Post("/api/posts/:post_id/likes", restapi.GetUserPosts)
+	// app.Delete("/api/posts/:post_id/likes", restapi.GetUserPosts)
 
 	app.Static("/assets", "./web/dist/assets")
 	app.Static("*", "./web/dist/index.html")

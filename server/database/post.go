@@ -54,10 +54,10 @@ func CreatePost(user_id primitive.ObjectID, content string, parent_id primitive.
 	return http.StatusOK, post
 }
 
-func GetPostByID(author_id, post_id primitive.ObjectID) (int, Post) {
+func GetPostByID(post_id primitive.ObjectID) (int, Post) {
 	var post Post
 	postCollection := Mongo.Collection("posts")
-	err := postCollection.FindOne(context.TODO(), bson.M{"author_id": author_id, "_id": post_id}).Decode(&post)
+	err := postCollection.FindOne(context.TODO(), bson.M{"_id": post_id}).Decode(&post)
 	if err != nil {
 		return http.StatusNotFound, Post{}
 	}
@@ -65,12 +65,25 @@ func GetPostByID(author_id, post_id primitive.ObjectID) (int, Post) {
 	return http.StatusOK, post
 }
 
-func DeletePostByID(author_id, post_id primitive.ObjectID) int {
+func DeletePostByID(post_id primitive.ObjectID) int {
 	postCollection := Mongo.Collection("posts")
-	_, err := postCollection.DeleteOne(context.TODO(), bson.M{"author_id": author_id, "_id": post_id})
+	_, err := postCollection.DeleteOne(context.TODO(), bson.M{"_id": post_id})
 	if err != nil {
 		return http.StatusInternalServerError
 	}
 
 	return http.StatusOK
+}
+
+func GetReplies(post_id primitive.ObjectID, limit int64, offset int64) []Post {
+	posts := []Post{}
+	postCollection := Mongo.Collection("posts")
+
+	cur, err := postCollection.Find(context.TODO(), bson.M{"parent_id": post_id, "repost": false}, options.Find().SetSort(bson.M{"created_at": -1}).SetLimit(limit).SetSkip(offset))
+	if err != nil {
+		return posts
+	}
+
+	_ = cur.All(context.TODO(), &posts)
+	return posts
 }
