@@ -191,7 +191,7 @@ func GetUserFromContext(ctx *fiber.Ctx) (database.User, int) {
 	accessToken := ctx.Cookies("access_token")
 	isValid, user := ValidateAccessToken(accessToken)
 	if !isValid {
-		return user, http.StatusBadGateway
+		return user, http.StatusBadRequest
 	}
 	return user, http.StatusOK
 }
