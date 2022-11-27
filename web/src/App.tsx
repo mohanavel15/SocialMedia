@@ -1,5 +1,6 @@
 import { Route, Routes } from '@solidjs/router';
 import { Component, lazy } from 'solid-js';
+import Feed from './pages/Feed';
 
 const Home = lazy(() => import("./pages/Home"));
 const User = lazy(() => import("./pages/User"));
@@ -8,15 +9,16 @@ const Login = lazy(() => import("./pages/Login"));
 
 const App: Component = () => {
   return (
-    <>
-      <h1>My Site with Lots of Pages</h1>
+    <div class="h-screen w-full bg-black">
       <Routes>
-        <Route path="/" component={Home} />
-        <Route path="/:id" component={User} />
-        <Route path="posts/:id" component={Post} />
+        <Route path="/" component={Home}>
+          <Route path="/" component={Feed} />
+          <Route path="/:username" component={User} />
+        </Route>
+        <Route path="/posts/:id" component={Post} />
         <Route path="/login" component={Login} />
       </Routes>
-    </>
+    </div>
   );
 };
 
