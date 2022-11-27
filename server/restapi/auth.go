@@ -57,7 +57,6 @@ func Register(ctx *fiber.Ctx) error {
 		Name:       username,
 		Username:   username,
 		Bio:        "",
-		Verified:   false,
 		Password:   hashedPassword,
 		CreatedAt:  time.Now().Unix(),
 		LastLogout: 0,
@@ -186,4 +185,13 @@ func ValidateJWT(tokenString string) (jwt.MapClaims, error) {
 	} else {
 		return jwt.MapClaims{}, fmt.Errorf("token is invalid")
 	}
+}
+
+func GetUserFromContext(ctx *fiber.Ctx) (database.User, int) {
+	accessToken := ctx.Cookies("access_token")
+	isValid, user := ValidateAccessToken(accessToken)
+	if !isValid {
+		return user, http.StatusBadGateway
+	}
+	return user, http.StatusOK
 }
