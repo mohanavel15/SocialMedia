@@ -29,11 +29,16 @@ func GetUserPosts(ctx *fiber.Ctx) error {
 
 	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
 	if err != nil {
-		offset = 1
+		offset = 0
 	}
 
 	posts := database.GetUserPosts(user, limit, offset)
-	return ctx.JSON(posts)
+	res_posts := []response.Post{}
+	for _, post := range posts {
+		res_posts = append(res_posts, response.NewPost(post))
+	}
+
+	return ctx.JSON(res_posts)
 }
 
 func GetPost(ctx *fiber.Ctx) error {
@@ -82,7 +87,7 @@ func CreatePost(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(status)
 	}
 
-	return ctx.JSON(post)
+	return ctx.JSON(response.NewPost(post))
 }
 
 func DeletePost(ctx *fiber.Ctx) error {
@@ -125,9 +130,14 @@ func GetReplies(ctx *fiber.Ctx) error {
 
 	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
 	if err != nil {
-		offset = 1
+		offset = 0
 	}
 
 	posts := database.GetReplies(post_id, limit, offset)
-	return ctx.JSON(posts)
+	res_posts := []response.Post{}
+	for _, post := range posts {
+		res_posts = append(res_posts, response.NewPost(post))
+	}
+
+	return ctx.JSON(res_posts)
 }

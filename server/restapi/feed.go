@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"SocialMedia/server/database"
+	"SocialMedia/server/response"
 	"net/http"
 	"strconv"
 
@@ -21,11 +22,16 @@ func GetFeed(ctx *fiber.Ctx) error {
 
 	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
 	if err != nil {
-		offset = 1
+		offset = 0
 	}
 
 	posts := database.GetFeed(user, limit, offset)
-	return ctx.JSON(posts)
+	res_posts := []response.Post{}
+	for _, post := range posts {
+		res_posts = append(res_posts, response.NewPost(post))
+	}
+
+	return ctx.JSON(res_posts)
 }
 
 func GetGlobalFeed(ctx *fiber.Ctx) error {
@@ -36,9 +42,14 @@ func GetGlobalFeed(ctx *fiber.Ctx) error {
 
 	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
 	if err != nil {
-		offset = 1
+		offset = 0
 	}
 
 	posts := database.GetGlobalFeed(limit, offset)
-	return ctx.JSON(posts)
+	res_posts := []response.Post{}
+	for _, post := range posts {
+		res_posts = append(res_posts, response.NewPost(post))
+	}
+
+	return ctx.JSON(res_posts)
 }

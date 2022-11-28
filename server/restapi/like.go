@@ -26,7 +26,7 @@ func GetUserLikes(ctx *fiber.Ctx) error {
 
 	offset, err := strconv.ParseInt(ctx.Query("offset"), 10, 64)
 	if err != nil {
-		offset = 1
+		offset = 0
 	}
 
 	posts := database.GetUserLikes(user, limit, offset)
