@@ -22,9 +22,9 @@ func GetUserLikes(user User, limit int64, offset int64) []Post {
 	return posts
 }
 
-func AddLike(like_id, user_id primitive.ObjectID) int {
+func AddLike(post_id, user_id primitive.ObjectID) int {
 	postCollection := Mongo.Collection("posts")
-	_, err := postCollection.UpdateByID(context.TODO(), like_id, bson.M{"$push": bson.M{"likes": like_id}})
+	_, err := postCollection.UpdateByID(context.TODO(), post_id, bson.M{"$push": bson.M{"likes": user_id}})
 	if err != nil {
 		return http.StatusInternalServerError
 	}
@@ -32,9 +32,9 @@ func AddLike(like_id, user_id primitive.ObjectID) int {
 	return http.StatusOK
 }
 
-func RemoveLike(like_id, user_id primitive.ObjectID) int {
+func RemoveLike(post_id, user_id primitive.ObjectID) int {
 	postCollection := Mongo.Collection("posts")
-	_, err := postCollection.UpdateByID(context.TODO(), like_id, bson.M{"$pull": bson.M{"likes": like_id}})
+	_, err := postCollection.UpdateByID(context.TODO(), post_id, bson.M{"$pull": bson.M{"likes": user_id}})
 	if err != nil {
 		return http.StatusInternalServerError
 	}
