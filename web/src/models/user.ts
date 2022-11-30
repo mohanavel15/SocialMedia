@@ -1,7 +1,8 @@
 export type User = {
+    id: string,
     name: string,
     username: string,
     bio: string,
-    verified: boolean,
+    following: number,
     created_at: number,
 }
