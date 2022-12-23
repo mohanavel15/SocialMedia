@@ -16,7 +16,16 @@ func GetUser(ctx *fiber.Ctx) error {
 
 	user, status := database.GetUserByUsername(username)
 	if status != http.StatusOK {
-		return ctx.SendStatus(http.StatusNotFound)
+		return ctx.SendStatus(status)
+	}
+
+	return ctx.JSON(response.NewUser(user))
+}
+
+func GetCurrentUser(ctx *fiber.Ctx) error {
+	user, status := GetUserFromContext(ctx)
+	if status != http.StatusOK {
+		return ctx.SendStatus(status)
 	}
 
 	return ctx.JSON(response.NewUser(user))

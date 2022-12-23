@@ -27,30 +27,31 @@ func main() {
 
 	app := fiber.New()
 
-	app.Post("/api/register", restapi.Register) // Tested
-	app.Post("/api/login", restapi.Login)       // Tested
-	app.Post("/api/logout", restapi.Logout)     // Tested
+	app.Post("/api/register", restapi.Register)
+	app.Post("/api/login", restapi.Login)
+	app.Post("/api/logout", restapi.Logout)
 
-	app.Get("/api/feed", restapi.GetFeed)              // requires authenticated
-	app.Get("/api/feed/global", restapi.GetGlobalFeed) // Tested
+	app.Get("/api/feed", restapi.GetFeed)
+	app.Get("/api/feed/global", restapi.GetGlobalFeed)
 
-	app.Get("/api/users/:username", restapi.GetUser)            // Tested
-	app.Get("/api/users/:username/likes", restapi.GetUserLikes) // Tested
-	app.Get("/api/users/:username/posts", restapi.GetUserPosts) // Tested
-	app.Post("/api/users/:username/posts", restapi.CreatePost)  // Tested. requires authenticated
+	app.Get("/api/me", restapi.GetCurrentUser)
+	app.Get("/api/users/:username", restapi.GetUser)
+	app.Get("/api/users/:username/likes", restapi.GetUserLikes)
+	app.Get("/api/users/:username/posts", restapi.GetUserPosts)
+	app.Post("/api/users/:username/posts", restapi.CreatePost)
 
-	// app.Post("/api/users/:username/follow", restapi.CreatePost)
-	// app.Delete("/api/users/:username/follow", restapi.CreatePost)
-	// app.Get("/api/users/:username/following", restapi.CreatePost)
-	// app.Get("/api/users/:username/followers", restapi.CreatePost)
+	app.Post("/api/users/:username/follow", restapi.FollowUser)
+	app.Delete("/api/users/:username/follow", restapi.UnfollowUser)
+	// app.Get("/api/users/:username/following", restapi.GetUserFollowing)
+	// app.Get("/api/users/:username/followers", restapi.GetUserFollowers)
 
-	app.Get("/api/posts/:post_id", restapi.GetPost)            // Tested
-	app.Delete("/api/posts/:post_id", restapi.DeletePost)      // Tested. requires authenticated
-	app.Get("/api/posts/:post_id/replies", restapi.GetReplies) // Tested
+	app.Get("/api/posts/:post_id", restapi.GetPost)
+	app.Delete("/api/posts/:post_id", restapi.DeletePost)
+	app.Get("/api/posts/:post_id/replies", restapi.GetReplies)
 
 	// app.Get("/api/posts/:post_id/likes", restapi.GetUserPosts)
-	app.Post("/api/posts/:post_id/like", restapi.AddLike)      // Tested
-	app.Delete("/api/posts/:post_id/like", restapi.RemoveLike) // Tested
+	app.Post("/api/posts/:post_id/like", restapi.AddLike)
+	app.Delete("/api/posts/:post_id/like", restapi.RemoveLike)
 
 	app.Static("/assets", "./web/dist/assets")
 	app.Static("*", "./web/dist/index.html")

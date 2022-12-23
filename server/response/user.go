@@ -8,6 +8,7 @@ type User struct {
 	Username  string `json:"username"`
 	Bio       string `json:"bio"`
 	Following int    `json:"following"`
+	Followers int    `json:"followers"`
 	CreatedAt int64  `json:"created_at"`
 }
 

@@ -78,9 +78,9 @@ func UpdateBio(user_id primitive.ObjectID, bio string) int {
 	return http.StatusOK
 }
 
-func Follow(user_id, follow_user_id primitive.ObjectID) int {
+func Follow(user, follow_user User) int {
 	users := Mongo.Collection("users")
-	_, err := users.UpdateByID(context.TODO(), user_id, bson.M{"$push": bson.M{"following": follow_user_id}})
+	_, err := users.UpdateByID(context.TODO(), user.ID, bson.M{"$push": bson.M{"following": follow_user.ID}})
 	if err != nil {
 		return http.StatusInternalServerError
 	}
@@ -88,9 +88,9 @@ func Follow(user_id, follow_user_id primitive.ObjectID) int {
 	return http.StatusOK
 }
 
-func Unfollow(user_id, unfollow_user_id primitive.ObjectID) int {
+func Unfollow(user, unfollow_user User) int {
 	users := Mongo.Collection("users")
-	_, err := users.UpdateByID(context.TODO(), user_id, bson.M{"$pull": bson.M{"following": unfollow_user_id}})
+	_, err := users.UpdateByID(context.TODO(), user.ID, bson.M{"$pull": bson.M{"following": unfollow_user.ID}})
 	if err != nil {
 		return http.StatusInternalServerError
 	}
