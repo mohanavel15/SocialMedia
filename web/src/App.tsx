@@ -15,8 +15,8 @@ const App: Component = () => {
   const [user, setUser] = createSignal<UserType>()
   const [isLoggedIn, setIsLoggedIn] = createSignal(false)
 
-  const getUser = (username: string) => {
-    fetch("/api/users/" + username).then(res => {
+  const getCurrentUser = () => {
+    fetch("/api/me").then(res => {
       if (res.ok) {
         res.json().then((user: UserType) => { setUser(user); setIsLoggedIn(true) })
       }
@@ -24,14 +24,15 @@ const App: Component = () => {
   }
 
   onMount(() => {
-    getUser("@me")
+    getCurrentUser()
   })
 
   let value = {
     user: user,
     setUser: setUser,
     isLoggedIn: isLoggedIn,
-    setIsLoggedIn: setIsLoggedIn
+    setIsLoggedIn: setIsLoggedIn,
+    updateUser: getCurrentUser,
   };
 
   return (
