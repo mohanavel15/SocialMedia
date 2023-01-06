@@ -1,4 +1,4 @@
-import { createSignal, createContext, ParentComponent, onMount } from "solid-js";
+import { createContext, ParentComponent } from "solid-js";
 import type { Accessor, Setter } from "solid-js";
 import { User } from "../models/user";
 
