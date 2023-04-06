@@ -22,6 +22,20 @@ func GetUser(ctx *fiber.Ctx) error {
 	return ctx.JSON(response.NewUser(user))
 }
 
+func GetUserByID(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if id == "" {
+		return ctx.SendStatus(http.StatusBadRequest)
+	}
+
+	user, status := database.GetUserByID(id)
+	if status != http.StatusOK {
+		return ctx.SendStatus(status)
+	}
+
+	return ctx.JSON(response.NewUser(user))
+}
+
 func GetCurrentUser(ctx *fiber.Ctx) error {
 	user, status := GetUserFromContext(ctx)
 	if status != http.StatusOK {

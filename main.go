@@ -36,6 +36,7 @@ func main() {
 
 	app.Get("/api/me", restapi.GetCurrentUser)
 	app.Get("/api/users/:username", restapi.GetUser)
+	app.Get("/api/users-id/:id", restapi.GetUserByID)
 	app.Get("/api/users/:username/likes", restapi.GetUserLikes)
 	app.Get("/api/users/:username/posts", restapi.GetUserPosts)
 	app.Post("/api/users/:username/posts", restapi.CreatePost)
