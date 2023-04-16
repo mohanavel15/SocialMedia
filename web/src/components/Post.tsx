@@ -1,16 +1,16 @@
 import { Post as PostType } from "../models/post";
-import { AiOutlineLike, AiOutlineRetweet } from "solid-icons/ai";
+import { AiFillLike, AiOutlineLike, AiOutlineRetweet } from "solid-icons/ai";
 import { FaRegularMessage } from "solid-icons/fa";
 import { useStore } from "../contexts/store";
 import { User } from "../models/user";
-import { useContext } from "solid-js";
-import { UserContext } from "../contexts/usercontext";
-import { Link } from "@solidjs/router";
+import { useUserContext } from "../contexts/usercontext";
+import { Link, useNavigate } from "@solidjs/router";
 
 export default function Post(props: { post: PostType }) {
     const store = useStore();
+    const user_ctx = useUserContext();
+
     let author = {} as User
-    const user_ctx = useContext(UserContext)
     if (user_ctx?.user()?.id === props.post.author_id) {
         author = user_ctx?.user()!;
     } else {
@@ -26,6 +26,27 @@ export default function Post(props: { post: PostType }) {
         }
     }
 
+    function ToggleLike(add: boolean) {
+        fetch(`/api/posts/${props.post.id}/like`, {
+            method: add ? "POST" : "DELETE",
+        }).then((r) => {
+            if (r.ok) {
+                if (add) {
+                    props.post.likes += 1;
+                    user_ctx?.likes.set(props.post.id, props.post);
+                } else {
+                    props.post.likes -= 1;
+                    user_ctx?.likes.delete(props.post.id);
+                }
+                let like_el = document.getElementById(`${props.post.id}-like`);
+                if (like_el) {
+                    like_el.innerText = props.post.likes.toString();
+                }
+            }
+        })
+    }
+
+    const navigate = useNavigate();
 
     let date = new Date(props.post.created_at * 1000).toDateString()
     return (
@@ -46,11 +67,11 @@ export default function Post(props: { post: PostType }) {
                 </div>
             </div>
             <div class="flex justify-evenly items-center h-8">
-                <button><FaRegularMessage size={16} /></button>
+                <button onclick={() => navigate(`/posts/${props.post.id}`)}><FaRegularMessage size={16} /></button>
                 <button><AiOutlineRetweet size={16} /></button>
-                <button class="flex items-center justify-evenly">
-                    <AiOutlineLike size={16} />
-                    {props.post.likes}
+                <button class="flex items-center justify-evenly" onclick={() => ToggleLike(user_ctx?.likes.get(props.post.id) === undefined)}>
+                    { user_ctx?.likes.get(props.post.id) !== undefined ? <AiFillLike size={16} color="red" /> : <AiOutlineLike size={16} /> }
+                    <span id={`${props.post.id}-like`}>{props.post.likes}</span>
                 </button>
             </div>
         </div>

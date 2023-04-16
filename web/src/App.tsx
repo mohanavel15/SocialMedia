@@ -1,8 +1,10 @@
+import { ReactiveMap } from '@solid-primitives/map';
 import { Route, Routes } from '@solidjs/router';
-import { Component, createSignal, lazy, onMount } from 'solid-js';
+import { Component, createEffect, createSignal, lazy, onMount } from 'solid-js';
 import { PopUpProvider } from './contexts/popupcontext';
 import { StoreProvider } from './contexts/store';
 import { UserProvider } from './contexts/usercontext';
+import { Post as PostType } from './models/post';
 import { User as UserType } from './models/user';
 import Feed from './pages/Feed';
 import Global from './pages/Global';
@@ -13,24 +15,51 @@ const User = lazy(() => import("./pages/User"));
 const PostPage = lazy(() => import("./pages/PostPage"));
 
 const App: Component = () => {
-  const [user, setUser] = createSignal<UserType>()
-  const [isLoggedIn, setIsLoggedIn] = createSignal(false)
+  const [user, setUser] = createSignal<UserType>();
+  let posts = new ReactiveMap<string, PostType>();
+  let likes = new ReactiveMap<string, PostType>();
+  const [isLoggedIn, setIsLoggedIn] = createSignal(false);
 
   const getCurrentUser = () => {
     fetch("/api/me").then(res => {
       if (res.ok) {
-        res.json().then((user: UserType) => { setUser(user); setIsLoggedIn(true) })
+        res.json().then((user: UserType) => { setUser(user); setIsLoggedIn(true) });
       }
     })
   }
 
+  createEffect(() => {
+    let user_obj = user();
+    if (user_obj === undefined) {
+      return;
+    }
+
+    fetch(`/api/users/${user_obj.username}/posts`).then((res) => {
+      if (res.ok) {
+        res.json().then((res_posts: PostType[]) => {
+          res_posts.forEach((p) => posts.set(p.id, p));
+        })
+      }
+    })
+    
+    fetch(`/api/users/${user_obj.username}/likes`).then((res) => {
+      if (res.ok) {
+        res.json().then((res_posts: PostType[]) => {
+          res_posts.forEach((p) => likes.set(p.id, p));
+        })
+      }
+    })
+  })
+
   onMount(() => {
-    getCurrentUser()
+    getCurrentUser();
   })
 
   let value = {
     user: user,
     setUser: setUser,
+    posts: posts,
+    likes: likes,
     isLoggedIn: isLoggedIn,
     setIsLoggedIn: setIsLoggedIn,
     updateUser: getCurrentUser,

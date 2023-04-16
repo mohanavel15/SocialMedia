@@ -60,7 +60,7 @@ func AddLike(ctx *fiber.Ctx) error {
 	}
 
 	if has := slices.Contains(post.Likes, user.ID); has {
-		return ctx.SendStatus(http.StatusBadRequest)
+		return ctx.SendStatus(http.StatusNotModified)
 	}
 
 	status = database.AddLike(post.ID, user.ID)
@@ -86,7 +86,7 @@ func RemoveLike(ctx *fiber.Ctx) error {
 	}
 
 	if has := slices.Contains(post.Likes, user.ID); !has {
-		return ctx.SendStatus(http.StatusBadRequest)
+		return ctx.SendStatus(http.StatusNotModified)
 	}
 
 	status = database.RemoveLike(post.ID, user.ID)
