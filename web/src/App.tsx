@@ -1,6 +1,7 @@
 import { Route, Routes } from '@solidjs/router';
 import { Component, createSignal, lazy, onMount } from 'solid-js';
 import { PopUpProvider } from './contexts/popupcontext';
+import { StoreProvider } from './contexts/store';
 import { UserProvider } from './contexts/usercontext';
 import { User as UserType } from './models/user';
 import Feed from './pages/Feed';
@@ -37,6 +38,7 @@ const App: Component = () => {
 
   return (
     <div class="h-screen w-full bg-black text-white">
+      <StoreProvider>
       <PopUpProvider>
         <UserProvider value={value}>
           <Routes>
@@ -51,6 +53,7 @@ const App: Component = () => {
         </UserProvider>
         <PopUp />
       </PopUpProvider>
+      </StoreProvider>
     </div>
   );
 };
