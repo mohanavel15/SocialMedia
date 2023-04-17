@@ -18,8 +18,8 @@ export default function LeftSideBar() {
                 </Show>
                 <button onclick={() => navigate("/global")} class="text-white text-xl hover:bg-zinc-800 h-12 my-2 px-8 rounded-2xl">Global</button>
                 <Show when={user_ctx?.isLoggedIn()}>
-                    <button onclick={() => navigate(`/${user_ctx?.user()?.name}`)} class="text-white text-xl hover:bg-zinc-800 h-12 my-2 px-8 rounded-2xl">Profile</button>
-                    <button class="text-white text-xl hover:bg-cyan-800 h-12 my-2 px-8 rounded-2xl bg-cyan-600">Post</button>
+                    <button onclick={() => navigate(`/users/${user_ctx?.user()?.name}`)} class="text-white text-xl hover:bg-zinc-800 h-12 my-2 px-8 rounded-2xl">Profile</button>
+                    <button class="text-white text-xl hover:bg-blue-800 h-12 my-2 px-8 rounded-2xl bg-blue-700">Post</button>
                 </Show>
             </div>
             <div class="absolute bottom-0 right-0 flex flex-col w-48 h-1/2 justify-end mx-3">
@@ -28,7 +28,7 @@ export default function LeftSideBar() {
                         <Profile />
                     </Match>
                     <Match when={!user_ctx?.isLoggedIn()}>
-                        <button class="text-white text-xl bg-cyan-500 h-12 my-2 px-8 rounded-2xl items-end" onclick={() => { popup_ctx?.setCompent(<Login />); popup_ctx?.setVisible(true) }}>Login</button>
+                        <button class="text-white text-xl bg-blue-700 hover:bg-blue-800 h-12 my-2 px-8 rounded-2xl items-end" onclick={() => { popup_ctx?.setCompent(Login); popup_ctx?.setVisible(true) }}>Login</button>
                     </Match>
                 </Switch>
             </div>

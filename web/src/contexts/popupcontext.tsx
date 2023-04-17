@@ -1,4 +1,4 @@
-import { createContext, createSignal, ParentComponent } from "solid-js";
+import { createContext, createSignal, ParentComponent, useContext } from "solid-js";
 import type { JSX, Accessor, Setter } from "solid-js";
 
 export type PopUpContextType = {
@@ -25,3 +25,5 @@ export const PopUpProvider: ParentComponent<{}> = (props) => {
       </PopUpContext.Provider>
     );
 }
+
+export const usePopUp = () => useContext(PopUpContext);
