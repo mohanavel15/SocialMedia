@@ -24,6 +24,11 @@ const App: Component = () => {
     fetch("/api/me").then(res => {
       if (res.ok) {
         res.json().then((user: UserType) => { setUser(user); setIsLoggedIn(true) });
+      } else {
+        setUser(undefined);
+        posts.clear();
+        likes.clear();
+        setIsLoggedIn(false);
       }
     })
   }

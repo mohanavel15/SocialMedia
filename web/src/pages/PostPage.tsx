@@ -92,7 +92,9 @@ export default function PostPage() {
         <span class="px-6 font-bold text-xl">Post</span>
       </div>
       <div class="flex items-center p-4">
-        <img src="/src/assets/empty.png" class="rounded h-16 w-16" />
+        <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
+            <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
+        </div>
         <div class="flex flex-col px-4">
           <Link href={`/users/${author()?.username}`} class="font-bold text-xl">{author()?.name}</Link>
           <span>@{author()?.username}</span>

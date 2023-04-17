@@ -13,7 +13,7 @@ export default function Post(props: { post: PostType }) {
     let author = {} as User
     let user = store.users.get(props.post.author_id);
     if (user === undefined) {
-        fetch("/api/users-id/"+props.post.author_id).then(res => {
+        fetch("/api/users-id/" + props.post.author_id).then(res => {
             if (res.ok) {
                 res.json().then((user: User) => { author = user; store.users.set(user.id, user); store.users.set(user.username, user) });
             }
@@ -49,7 +49,9 @@ export default function Post(props: { post: PostType }) {
         <div class="border-b border-b-zinc-600 w-full">
             <div class="flex my-4 w-full">
                 <div class="w-32 flex justify-center">
-                    <img src="/src/assets/empty.png" class="rounded h-16 w-16" />
+                    <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
+                        <span class="text-3xl text-black">{author.name.charAt(0)}</span>
+                    </div>
                 </div>
                 <div class="flex flex-col w-full">
                     <div class="flex items-center" >
@@ -66,7 +68,7 @@ export default function Post(props: { post: PostType }) {
                 <button onclick={() => navigate(`/posts/${props.post.id}`)}><FaRegularMessage size={16} /></button>
                 <button><AiOutlineRetweet size={16} /></button>
                 <button class="flex items-center justify-evenly" onclick={() => ToggleLike(user_ctx?.likes.get(props.post.id) === undefined)}>
-                    { user_ctx?.likes.get(props.post.id) !== undefined ? <AiFillLike size={16} color="red" /> : <AiOutlineLike size={16} /> }
+                    {user_ctx?.likes.get(props.post.id) !== undefined ? <AiFillLike size={16} color="red" /> : <AiOutlineLike size={16} />}
                     <span id={`${props.post.id}-like`}>{props.post.likes}</span>
                 </button>
             </div>
