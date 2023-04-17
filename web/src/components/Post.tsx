@@ -11,19 +11,15 @@ export default function Post(props: { post: PostType }) {
     const user_ctx = useUserContext();
 
     let author = {} as User
-    if (user_ctx?.user()?.id === props.post.author_id) {
-        author = user_ctx?.user()!;
+    let user = store.users.get(props.post.author_id);
+    if (user === undefined) {
+        fetch("/api/users-id/"+props.post.author_id).then(res => {
+            if (res.ok) {
+                res.json().then((user: User) => { author = user; store.users.set(user.id, user); store.users.set(user.username, user) });
+            }
+        })
     } else {
-        let user = store.users.get(props.post.author_id);
-        if (user === undefined) {
-            fetch("/api/users-id/"+props.post.author_id).then(res => {
-                if (res.ok) {
-                  res.json().then((user: User) => { author = user; store.users.set(user.id, user); store.users.set(user.username, user) });
-                }
-            })
-        } else {
-            author = user
-        }
+        author = user
     }
 
     function ToggleLike(add: boolean) {
