@@ -48,6 +48,15 @@ func GetUserByUsername(username string) (User, int) {
 	return user, http.StatusOK
 }
 
+func GetUserFollowersCount(user_id primitive.ObjectID) int64 {
+	users := Mongo.Collection("users")
+	count, err := users.CountDocuments(context.TODO(), bson.M{"following": user_id})
+	if err != nil {
+		count = 0
+	}
+	return count
+}
+
 func UpdateUsername(user_id primitive.ObjectID, username string) int {
 	users := Mongo.Collection("users")
 	_, err := users.UpdateByID(context.TODO(), user_id, bson.M{"username": username})

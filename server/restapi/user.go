@@ -19,7 +19,8 @@ func GetUser(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(status)
 	}
 
-	return ctx.JSON(response.NewUser(user))
+	followers := database.GetUserFollowersCount(user.ID)
+	return ctx.JSON(response.NewUser(user, followers))
 }
 
 func GetUserByID(ctx *fiber.Ctx) error {
@@ -33,7 +34,8 @@ func GetUserByID(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(status)
 	}
 
-	return ctx.JSON(response.NewUser(user))
+	followers := database.GetUserFollowersCount(user.ID)
+	return ctx.JSON(response.NewUser(user, followers))
 }
 
 func GetCurrentUser(ctx *fiber.Ctx) error {
@@ -42,5 +44,6 @@ func GetCurrentUser(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(status)
 	}
 
-	return ctx.JSON(response.NewUser(user))
+	followers := database.GetUserFollowersCount(user.ID)
+	return ctx.JSON(response.NewUser(user, followers))
 }

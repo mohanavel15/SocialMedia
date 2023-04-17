@@ -4,5 +4,6 @@ export type User = {
     username: string,
     bio: string,
     following: number,
+    followers: number,
     created_at: number,
 }

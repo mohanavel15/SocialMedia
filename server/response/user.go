@@ -7,18 +7,19 @@ type User struct {
 	Name      string `json:"name"`
 	Username  string `json:"username"`
 	Bio       string `json:"bio"`
-	Following int    `json:"following"`
-	Followers int    `json:"followers"`
+	Following int64  `json:"following"`
+	Followers int64  `json:"followers"`
 	CreatedAt int64  `json:"created_at"`
 }
 
-func NewUser(user database.User) User {
+func NewUser(user database.User, followers int64) User {
 	return User{
 		ID:        user.ID.Hex(),
 		Name:      user.Name,
 		Username:  user.Username,
 		Bio:       user.Bio,
-		Following: len(user.Following),
+		Following: int64(len(user.Following)),
+		Followers: followers,
 		CreatedAt: user.CreatedAt,
 	}
 }

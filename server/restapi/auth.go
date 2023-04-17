@@ -58,6 +58,7 @@ func Register(ctx *fiber.Ctx) error {
 		Username:   username,
 		Bio:        "",
 		Password:   hashedPassword,
+		Following:  []primitive.ObjectID{},
 		CreatedAt:  time.Now().Unix(),
 		LastLogout: 0,
 	}
