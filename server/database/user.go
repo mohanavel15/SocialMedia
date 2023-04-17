@@ -106,3 +106,15 @@ func Unfollow(user, unfollow_user User) int {
 
 	return http.StatusOK
 }
+
+func GetFollowing(user User) []User {
+	users := Mongo.Collection("users")
+	followings := []User{}
+	cur, err := users.Find(context.TODO(), bson.M{"_id": bson.M{"$in": user.Following}})
+	if err != nil {
+		return followings
+	}
+
+	_ = cur.All(context.TODO(), &followings)
+	return followings
+}

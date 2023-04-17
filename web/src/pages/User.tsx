@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { createSignal, For, onMount, useContext } from "solid-js";
+import { createEffect, createSignal, For, useContext } from "solid-js";
 import { useStore } from "../contexts/store";
 import { UserContext } from "../contexts/usercontext";
 import { User as UserOBJ } from "../models/user";
@@ -31,36 +31,59 @@ export default function User() {
   }
 
   const [posts, setPost] = createSignal<PostType[]>([])
-  fetch(`/api/users/${params.username}/posts`).then(res => {
-    if (res.ok) {
-      res.json().then(res_post => setPost(res_post))
-    }
-  })
-
   const [likes, setLike] = createSignal<PostType[]>([])
-  fetch(`/api/users/${params.username}/likes`).then(res => {
-    if (res.ok) {
-      res.json().then(res_post => setLike(res_post))
-    }
+  
+  createEffect(() => {
+    getUser(params.username)
+    fetch(`/api/users/${params.username}/posts`).then(res => {
+      if (res.ok) {
+        res.json().then(res_post => setPost(res_post))
+      }
+    })
+    fetch(`/api/users/${params.username}/likes`).then(res => {
+      if (res.ok) {
+        res.json().then(res_post => setLike(res_post))
+      }
+    })
   })
 
-  onMount(() => {
-    getUser(params.username)
-  })
+  function ToggleFollow(follow: boolean) {
+    let user_obj = user();
+    if (user_obj === undefined) return
+
+    fetch(`/api/users/${user_obj.username}/follow`, {
+      method: follow ? "POST" : "DELETE"
+    }).then(res => {
+      if (res.ok && user_obj !== undefined) {
+        if (follow) {
+          user_ctx?.following.set(user_obj.id, user_obj);
+        } else {
+          user_ctx?.following.delete(user_obj.id);
+        }
+      }
+    })
+  }
 
   return (
     <div class="h-full w-full overflow-y-scroll">
-      <div class="relative w-[100%] h-[30%] flex">
+      <div class="relative w-[100%] h-[20%] flex p-8">
         <div class="w-[30%] h-full flex items-center justify-center">
           <div class="border-black border-8 rounded-lg w-32 h-32 bg-white flex items-center justify-center">
             <span class="text-6xl text-black">{user()?.name.charAt(0)}</span>
           </div>
         </div>
-        <div class="w-[70%] h-full flex items-center">
+        <div class="relative w-[70%] h-full flex items-center">
           <div class="flex flex-col">
             <span class="text-xl font-bold">{user()?.name}</span>
             <span>@{user()?.username}</span>
+            <div class="flex items-center">
+              <span class="font-semibold">Following {user()?.following}</span>
+              <span class="w-4"></span>
+              <span class="font-semibold">Followers {user()?.followers}</span>
+            </div>
           </div>
+          { user_ctx?.user()?.id !== user()?.id && user_ctx?.following.get(user()?.id || "") === undefined && <button class="absolute right-0 top-0 border-2 border-white rounded h-8 w-24 hover:bg-white hover:text-black cursor-pointer" onclick={() => ToggleFollow(true)}>Follow</button> }
+          { user_ctx?.user()?.id !== user()?.id && user_ctx?.following.get(user()?.id || "") !== undefined && <button class="absolute right-0 top-0 border-2 border-red-600 text-red-600 rounded h-8 w-24 hover:bg-red-600 hover:text-black cursor-pointer" onclick={() => ToggleFollow(false)}>Unfollow</button> }
         </div>
       </div>
       <div class="border-b border-white flex items-center justify-evenly h-12">

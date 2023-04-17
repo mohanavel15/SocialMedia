@@ -9,6 +9,7 @@ export type UserContextType = {
   setUser: Setter<User | undefined>
   posts: ReactiveMap<string, Post>
   likes: ReactiveMap<string, Post>
+  following: ReactiveMap<string, User>
   isLoggedIn: Accessor<boolean>
   setIsLoggedIn: Setter<boolean>
   updateUser: () => void

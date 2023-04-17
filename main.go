@@ -26,7 +26,6 @@ func main() {
 	database.ConnectDatabase(MONGO_URI, MONGO_DATABASE)
 
 	app := fiber.New()
-
 	app.Post("/api/register", restapi.Register)
 	app.Post("/api/login", restapi.Login)
 	app.Post("/api/logout", restapi.Logout)
@@ -39,15 +38,15 @@ func main() {
 	app.Get("/api/users-id/:id", restapi.GetUserByID)
 	app.Get("/api/users/:username/likes", restapi.GetUserLikes)
 	app.Get("/api/users/:username/posts", restapi.GetUserPosts)
-	app.Post("/api/users/:username/posts", restapi.CreatePost)
+	// app.Post("/api/users/:username/posts", restapi.CreatePost)
 
 	app.Post("/api/users/:username/follow", restapi.FollowUser)
 	app.Delete("/api/users/:username/follow", restapi.UnfollowUser)
-	// app.Get("/api/users/:username/following", restapi.GetUserFollowing)
+	app.Get("/api/users/:username/following", restapi.GetUserFollowing)
 	// app.Get("/api/users/:username/followers", restapi.GetUserFollowers)
 
 	app.Get("/api/posts/:post_id", restapi.GetPost)
-	app.Delete("/api/posts/:post_id", restapi.DeletePost)
+	// app.Delete("/api/posts/:post_id", restapi.DeletePost)
 	app.Get("/api/posts/:post_id/replies", restapi.GetReplies)
 
 	// app.Get("/api/posts/:post_id/likes", restapi.GetUserPosts)

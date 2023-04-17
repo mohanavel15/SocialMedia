@@ -18,6 +18,7 @@ const App: Component = () => {
   const [user, setUser] = createSignal<UserType>();
   let posts = new ReactiveMap<string, PostType>();
   let likes = new ReactiveMap<string, PostType>();
+  let following = new ReactiveMap<string, UserType>();
   const [isLoggedIn, setIsLoggedIn] = createSignal(false);
 
   const getCurrentUser = () => {
@@ -46,12 +47,18 @@ const App: Component = () => {
         })
       }
     })
-    
+
     fetch(`/api/users/${user_obj.username}/likes`).then((res) => {
       if (res.ok) {
         res.json().then((res_posts: PostType[]) => {
           res_posts.forEach((p) => likes.set(p.id, p));
         })
+      }
+    })
+
+    fetch(`/api/users/${user_obj.username}/following`).then(res => {
+      if (res.ok) {
+        res.json().then((res_users: UserType[]) => res_users.forEach(u => { following.set(u.id, u) }))
       }
     })
   })
@@ -65,6 +72,7 @@ const App: Component = () => {
     setUser: setUser,
     posts: posts,
     likes: likes,
+    following: following,
     isLoggedIn: isLoggedIn,
     setIsLoggedIn: setIsLoggedIn,
     updateUser: getCurrentUser,
@@ -73,20 +81,20 @@ const App: Component = () => {
   return (
     <div class="h-screen w-full bg-black text-white">
       <StoreProvider>
-      <PopUpProvider>
-        <UserProvider value={value}>
-          <Routes>
-            <Route path="/" component={Home}>
-              <Route path="/" component={isLoggedIn() ? Feed : Global} />
-              <Route path="/users/:username" component={User} />
-              <Route path="/feed" component={Feed} />
-              <Route path="/global" component={Global} />
-              <Route path="/posts/:id" component={PostPage} />
-            </Route>
-          </Routes>
-        </UserProvider>
-        <PopUp />
-      </PopUpProvider>
+        <PopUpProvider>
+          <UserProvider value={value}>
+            <Routes>
+              <Route path="/" component={Home}>
+                <Route path="/" component={isLoggedIn() ? Feed : Global} />
+                <Route path="/users/:username" component={User} />
+                <Route path="/feed" component={Feed} />
+                <Route path="/global" component={Global} />
+                <Route path="/posts/:id" component={PostPage} />
+              </Route>
+            </Routes>
+          </UserProvider>
+          <PopUp />
+        </PopUpProvider>
       </StoreProvider>
     </div>
   );
