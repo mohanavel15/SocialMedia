@@ -5,21 +5,35 @@ import { useStore } from "../contexts/store";
 import { User } from "../models/user";
 import { useUserContext } from "../contexts/usercontext";
 import { Link, useNavigate } from "@solidjs/router";
+import { createSignal } from "solid-js";
 
 export default function Post(props: { post: PostType }) {
     const store = useStore();
     const user_ctx = useUserContext();
+    const [author, setAuthor] = createSignal({ name: "", username: "" } as User);
+    const [parentAuthor, setParentAuthor] = createSignal({ name: "", username: "" } as User);
 
-    let author = {} as User
     let user = store.users.get(props.post.author_id);
     if (user === undefined) {
         fetch("/api/users-id/" + props.post.author_id).then(res => {
             if (res.ok) {
-                res.json().then((user: User) => { author = user; store.users.set(user.id, user); store.users.set(user.username, user) });
+                res.json().then((user: User) => { setAuthor(user); store.users.set(user.id, user); store.users.set(user.username, user) });
             }
         })
     } else {
-        author = user
+        setAuthor(user)
+    }
+
+    function GetParentAuthor(parent_id: string) {
+        fetch(`/api/posts/${parent_id}/author`).then(res => {
+            if (res.ok) {
+                res.json().then((user: User) => setParentAuthor(user));
+            }
+        })
+    }
+
+    if (props.post.parent_id != "000000000000000000000000") {
+        GetParentAuthor(props.post.parent_id);
     }
 
     function ToggleLike(add: boolean) {
@@ -47,15 +61,16 @@ export default function Post(props: { post: PostType }) {
     let date = new Date(props.post.created_at * 1000).toDateString()
     return (
         <div class="border-b border-b-zinc-600 w-full">
+            { (props.post.parent_id != "000000000000000000000000" && !props.post.repost) && <span class="mt-4 px-6">Replying to <Link href={`/users/${parentAuthor().username}`} class="text-blue-600" >{parentAuthor().username}</Link></span> }
             <div class="flex my-4 w-full">
                 <div class="w-32 flex justify-center">
                     <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
-                        <span class="text-3xl text-black">{author.name.charAt(0)}</span>
+                        <span class="text-3xl text-black">{author().name.charAt(0)}</span>
                     </div>
                 </div>
                 <div class="flex flex-col w-full">
                     <div class="flex items-center" >
-                        <Link href={`/users/${author.name}`} >{author.name}</Link>
+                        <Link href={`/users/${author().username}`} >{author().name}</Link>
                         <span class="h-0.5 w-4"></span>
                         <span class="text-zinc-600 text-sm">{date}</span>
                     </div>

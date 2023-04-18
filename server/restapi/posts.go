@@ -141,3 +141,24 @@ func GetReplies(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(res_posts)
 }
+
+func GetAuthor(ctx *fiber.Ctx) error {
+	post_id_str := ctx.Params("post_id")
+
+	post_id, err := primitive.ObjectIDFromHex(post_id_str)
+	if err != nil {
+		return ctx.SendStatus(http.StatusBadRequest)
+	}
+
+	status, post := database.GetPostByID(post_id)
+	if status != http.StatusOK {
+		return ctx.SendStatus(status)
+	}
+
+	user, status := database.GetUserByID(post.AuthorID.Hex())
+	if status != http.StatusOK {
+		return ctx.SendStatus(status)
+	}
+
+	return ctx.JSON(response.NewUser(user, 0))
+}

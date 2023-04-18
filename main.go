@@ -38,7 +38,7 @@ func main() {
 	app.Get("/api/users-id/:id", restapi.GetUserByID)
 	app.Get("/api/users/:username/likes", restapi.GetUserLikes)
 	app.Get("/api/users/:username/posts", restapi.GetUserPosts)
-	// app.Post("/api/users/:username/posts", restapi.CreatePost)
+	app.Post("/api/users/:username/posts", restapi.CreatePost)
 
 	app.Post("/api/users/:username/follow", restapi.FollowUser)
 	app.Delete("/api/users/:username/follow", restapi.UnfollowUser)
@@ -48,6 +48,7 @@ func main() {
 	app.Get("/api/posts/:post_id", restapi.GetPost)
 	// app.Delete("/api/posts/:post_id", restapi.DeletePost)
 	app.Get("/api/posts/:post_id/replies", restapi.GetReplies)
+	app.Get("/api/posts/:post_id/author", restapi.GetAuthor)
 
 	// app.Get("/api/posts/:post_id/likes", restapi.GetUserPosts)
 	app.Post("/api/posts/:post_id/like", restapi.AddLike)

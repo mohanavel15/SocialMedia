@@ -10,7 +10,7 @@ export default function Global() {
     }
   })
   return (
-    <div class="h-full flex flex-col">
+    <div class="h-full flex flex-col overflow-y-scroll">
       <For each={posts()}>
         { post => <Post post={post}/> }
       </For>
