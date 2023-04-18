@@ -15,9 +15,9 @@ export default function Feed() {
 
   return (
     <div class="h-full flex flex-col overflow-y-scroll">
-      { user_ctx?.isLoggedIn && <CreatePost parent_id="" /> }
+      { user_ctx?.isLoggedIn() && <CreatePost parent_id="" /> }
       <For each={posts()}>
-        { post => <>{ (post.parent_id === "000000000000000000000000" || post.repost) && <Post post={post}/> }</> }
+        { post => <Post post={post}/> }
       </For>
     </div>
   )

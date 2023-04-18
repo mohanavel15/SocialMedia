@@ -95,7 +95,7 @@ export default function User() {
         </button>
       </div>
       <For each={tab() === 1 ? posts() : likes()}>
-        { post => <>{ (post.parent_id === "000000000000000000000000" || post.repost) && <Post post={post}/> }</> }
+        { post => <Post post={post}/> }
       </For>
     </div>
   )

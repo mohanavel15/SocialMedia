@@ -9,8 +9,8 @@ export default function Login() {
   const [username, setUsername] = createSignal("")
   const [password, setPassword] = createSignal("")
 
-  async function do_login() {
-    let res = await fetch("/api/login", {
+  async function do_login_or_register(register: boolean) {
+    let res = await fetch(`/api/${register ? 'register' : 'login' }`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -21,17 +21,22 @@ export default function Login() {
       })
     })
     if (res.ok) {
-      user_ctx?.updateUser();
-      popup_ctx?.setVisible(false);
-      popup_ctx?.setCompent(undefined);
+      setUsername("");
+      setPassword("");
+      if (!register) {
+        user_ctx?.updateUser();
+        popup_ctx?.setVisible(false);
+        popup_ctx?.setCompent(undefined);
+      }
     }
   }
 
   return (
     <div class="flex flex-col w-96 h-full justify-evenly text-black">
-      <input type="text" placeholder="Username" class="p-4 bg-blue-100 h-12 rounded-full" onChange={e => setUsername(e.currentTarget.value)}></input>
-      <input type="password" placeholder="password" class="p-4 bg-blue-100 h-12 rounded-full" onChange={e => setPassword(e.currentTarget.value)}></input>
-      <button class="bg-blue-600 h-12 rounded-full hover:bg-blue-700" onClick={do_login}>Login</button>
+      <input type="text" placeholder="Username" class="p-4 bg-zinc-100 h-12 rounded" value={username()} onChange={e => setUsername(e.currentTarget.value)}></input>
+      <input type="password" placeholder="password" class="p-4 bg-zinc-100 h-12 rounded" value={password()} onChange={e => setPassword(e.currentTarget.value)}></input>
+      <button class="border-2 border-black h-12 rounded hover:bg-black hover:text-white" onClick={() => do_login_or_register(false)}>Login</button>
+      <button class="border-2 border-black h-12 rounded hover:bg-black hover:text-white" onClick={() => do_login_or_register(true)}>Register</button>
     </div>
   )
 }
