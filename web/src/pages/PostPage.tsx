@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "@solidjs/router";
 import { AiFillLike, AiOutlineArrowLeft, AiOutlineLike, AiOutlineRetweet } from "solid-icons/ai";
 import { FaRegularMessage } from "solid-icons/fa";
 import { createEffect, createSignal, For } from "solid-js";
+import CreatePost from "../components/CreatePost";
 import Post from "../components/Post";
 import { useStore } from "../contexts/store";
 import { useUserContext } from "../contexts/usercontext";
@@ -109,6 +110,7 @@ export default function PostPage() {
           <span id={`${post()?.id}-like`}>{post()?.likes}</span>
         </button>
       </div>
+      <CreatePost parent_id={params.id} />
       <For each={replies()}>{post => <Post post={post} />}</For>
     </div>
   )
