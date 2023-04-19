@@ -75,6 +75,15 @@ func DeletePostByID(post_id primitive.ObjectID) int {
 	return http.StatusOK
 }
 
+func GetRepliesCount(post_id primitive.ObjectID) int64 {
+	posts := Mongo.Collection("posts")
+	count, err := posts.CountDocuments(context.TODO(), bson.M{"parent_id": post_id, "repost": false})
+	if err != nil {
+		count = 0
+	}
+	return count
+}
+
 func GetReplies(post_id primitive.ObjectID, limit int64, offset int64) []Post {
 	posts := []Post{}
 	postCollection := Mongo.Collection("posts")

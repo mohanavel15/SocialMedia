@@ -8,18 +8,20 @@ type Post struct {
 	AuthorID  string `json:"author_id"`
 	Content   string `json:"content"`
 	Repost    bool   `json:"repost"`
-	Likes     int    `json:"likes"`
+	Likes     int64  `json:"likes"`
+	Replies   int64  `json:"replies"`
 	CreatedAt int64  `json:"created_at"`
 }
 
-func NewPost(post database.Post) Post {
+func NewPost(post database.Post, Replies int64) Post {
 	return Post{
 		ID:        post.ID.Hex(),
 		ParentID:  post.ParentID.Hex(),
 		AuthorID:  post.AuthorID.Hex(),
 		Content:   post.Content,
 		Repost:    post.Repost,
-		Likes:     len(post.Likes),
+		Likes:     int64(len(post.Likes)),
+		Replies:   Replies,
 		CreatedAt: post.CreatedAt,
 	}
 }

@@ -35,7 +35,8 @@ func GetUserLikes(ctx *fiber.Ctx) error {
 	posts := database.GetUserLikes(user, limit, offset)
 	var res_post []response.Post
 	for _, post := range posts {
-		res_post = append(res_post, response.NewPost(post))
+		replies := database.GetRepliesCount(post.ID)
+		res_post = append(res_post, response.NewPost(post, replies))
 	}
 
 	return ctx.JSON(res_post)

@@ -82,9 +82,12 @@ export default function Post(props: { post: PostType }) {
                 </div>
             </div>
             <div class="flex justify-evenly items-center h-8">
-                <button onclick={() => navigate(`/posts/${props.post.id}`)}><FaRegularMessage size={16} /></button>
+                <button class="flex items-center justify-evenly gap-1" onclick={() => navigate(`/posts/${props.post.id}`)}>
+                    <FaRegularMessage size={16} />
+                    <span>{props.post.replies}</span>
+                </button>
                 <button><AiOutlineRetweet size={16} /></button>
-                <button class="flex items-center justify-evenly" onclick={() => ToggleLike(user_ctx?.likes.get(props.post.id) === undefined)}>
+                <button class="flex items-center justify-evenly gap-1" onclick={() => ToggleLike(user_ctx?.likes.get(props.post.id) === undefined)}>
                     {user_ctx?.likes.get(props.post.id) !== undefined ? <AiFillLike size={16} color="red" /> : <AiOutlineLike size={16} />}
                     <span id={`${props.post.id}-like`}>{props.post.likes}</span>
                 </button>

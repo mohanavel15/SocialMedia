@@ -28,7 +28,8 @@ func GetFeed(ctx *fiber.Ctx) error {
 	posts := database.GetFeed(user, limit, offset)
 	res_posts := []response.Post{}
 	for _, post := range posts {
-		res_posts = append(res_posts, response.NewPost(post))
+		replies := database.GetRepliesCount(post.ID)
+		res_posts = append(res_posts, response.NewPost(post, replies))
 	}
 
 	return ctx.JSON(res_posts)
@@ -48,7 +49,8 @@ func GetGlobalFeed(ctx *fiber.Ctx) error {
 	posts := database.GetGlobalFeed(limit, offset)
 	res_posts := []response.Post{}
 	for _, post := range posts {
-		res_posts = append(res_posts, response.NewPost(post))
+		replies := database.GetRepliesCount(post.ID)
+		res_posts = append(res_posts, response.NewPost(post, replies))
 	}
 
 	return ctx.JSON(res_posts)

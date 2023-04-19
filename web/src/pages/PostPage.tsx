@@ -105,9 +105,12 @@ export default function PostPage() {
       <span>{post()?.content}</span>
       { post()?.repost && <PostPreview id={post()?.parent_id || ""} /> }
       <div class="flex justify-evenly items-center h-12 border-y border-white">
-        <button><FaRegularMessage size={16} /></button>
+        <button class="flex items-center justify-evenly gap-1">
+          <FaRegularMessage size={16} />
+          <span>{post()?.replies}</span>
+        </button>
         <button><AiOutlineRetweet size={16} /></button>
-        <button class="flex items-center justify-evenly" onclick={() => ToggleLike(user_ctx?.likes.get(post()?.id || "") === undefined, post()!)}>
+        <button class="flex items-center justify-evenly gap-1" onclick={() => ToggleLike(user_ctx?.likes.get(post()?.id || "") === undefined, post()!)}>
           {user_ctx?.likes.get(post()?.id || "") !== undefined ? <AiFillLike size={16} color="red" /> : <AiOutlineLike size={16} />}
           <span id={`${post()?.id}-like`}>{post()?.likes}</span>
         </button>

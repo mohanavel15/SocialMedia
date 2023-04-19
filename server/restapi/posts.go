@@ -35,7 +35,8 @@ func GetUserPosts(ctx *fiber.Ctx) error {
 	posts := database.GetUserPosts(user, limit, offset)
 	res_posts := []response.Post{}
 	for _, post := range posts {
-		res_posts = append(res_posts, response.NewPost(post))
+		replies := database.GetRepliesCount(post.ID)
+		res_posts = append(res_posts, response.NewPost(post, replies))
 	}
 
 	return ctx.JSON(res_posts)
@@ -54,7 +55,8 @@ func GetPost(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}
 
-	res_post := response.NewPost(post)
+	replies := database.GetRepliesCount(post.ID)
+	res_post := response.NewPost(post, replies)
 	return ctx.JSON(res_post)
 }
 
@@ -87,7 +89,8 @@ func CreatePost(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(status)
 	}
 
-	return ctx.JSON(response.NewPost(post))
+	replies := database.GetRepliesCount(post.ID)
+	return ctx.JSON(response.NewPost(post, replies))
 }
 
 func DeletePost(ctx *fiber.Ctx) error {
@@ -136,7 +139,8 @@ func GetReplies(ctx *fiber.Ctx) error {
 	posts := database.GetReplies(post_id, limit, offset)
 	res_posts := []response.Post{}
 	for _, post := range posts {
-		res_posts = append(res_posts, response.NewPost(post))
+		replies := database.GetRepliesCount(post.ID)
+		res_posts = append(res_posts, response.NewPost(post, replies))
 	}
 
 	return ctx.JSON(res_posts)
