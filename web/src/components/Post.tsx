@@ -6,6 +6,7 @@ import { User } from "../models/user";
 import { useUserContext } from "../contexts/usercontext";
 import { Link, useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
+import PostPreview from "./PostPreview";
 
 export default function Post(props: { post: PostType }) {
     const store = useStore();
@@ -77,6 +78,7 @@ export default function Post(props: { post: PostType }) {
                     <span>
                         {props.post.content}
                     </span>
+                    { props.post.repost && <PostPreview id={props.post.parent_id}  /> }
                 </div>
             </div>
             <div class="flex justify-evenly items-center h-8">

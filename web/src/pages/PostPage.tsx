@@ -4,6 +4,7 @@ import { FaRegularMessage } from "solid-icons/fa";
 import { createEffect, createSignal, For } from "solid-js";
 import CreatePost from "../components/CreatePost";
 import Post from "../components/Post";
+import PostPreview from "../components/PostPreview";
 import { useStore } from "../contexts/store";
 import { useUserContext } from "../contexts/usercontext";
 import { Post as PostType } from "../models/post";
@@ -87,21 +88,22 @@ export default function PostPage() {
   const navigate = useNavigate();
 
   return (
-    <div class="flex flex-col w-full h-full overflow-y-scroll">
-      <div class="flex h-14 items-center px-4">
-        <AiOutlineArrowLeft class="hover:bg-zinc-900 rounded-full p-1" size={32} onclick={() => navigate(-1)} />
+    <div class="flex flex-col w-full h-full overflow-y-scroll p-4 gap-4">
+      <div class="flex h-14 items-center">
+        <AiOutlineArrowLeft class="hover:bg-zinc-900 rounded-full" size={32} onclick={() => navigate(-1)} />
         <span class="px-6 font-bold text-xl">Post</span>
       </div>
-      <div class="flex items-center p-4">
+      <div class="flex items-center gap-4">
         <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
             <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
         </div>
-        <div class="flex flex-col px-4">
+        <div class="flex flex-col">
           <Link href={`/users/${author()?.username}`} class="font-bold text-xl">{author()?.name}</Link>
           <span>@{author()?.username}</span>
         </div>
       </div>
-      <span class="pb-4 px-4">{post()?.content}</span>
+      <span>{post()?.content}</span>
+      { post()?.repost && <PostPreview id={post()?.parent_id || ""} /> }
       <div class="flex justify-evenly items-center h-12 border-y border-white">
         <button><FaRegularMessage size={16} /></button>
         <button><AiOutlineRetweet size={16} /></button>
