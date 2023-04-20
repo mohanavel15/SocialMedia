@@ -17,7 +17,7 @@ export default function Feed() {
     <div class="h-full flex flex-col overflow-y-scroll">
       { user_ctx?.isLoggedIn() && <CreatePost parent_id="" /> }
       <For each={posts()}>
-        { post => <Post post={post}/> }
+        { post => <Post post={post} thread={false} /> }
       </For>
     </div>
   )

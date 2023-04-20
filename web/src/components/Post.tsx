@@ -8,7 +8,7 @@ import { Link, useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import PostPreview from "./PostPreview";
 
-export default function Post(props: { post: PostType }) {
+export default function Post(props: { post: PostType, thread: boolean }) {
     const store = useStore();
     const user_ctx = useUserContext();
     const [author, setAuthor] = createSignal({ name: "", username: "" } as User);
@@ -54,10 +54,10 @@ export default function Post(props: { post: PostType }) {
 
     let date = new Date(props.post.created_at * 1000).toDateString()
     return (
-        <div class="border-b border-b-zinc-600 w-full">
-            { (props.post.parent_id != "000000000000000000000000" && !props.post.repost) && <span class="mt-4 px-6">Replying to <Link href={`/users/${parentAuthor().username}`} class="text-blue-600" >{parentAuthor().username}</Link></span> }
+        <div class={`${ !props.thread && "border-b border-b-zinc-600" } w-full relative`}>
+            { (!props.thread && props.post.parent_id != "000000000000000000000000" && !props.post.repost) && <span class="mt-4 px-6">Replying to <Link href={`/users/${parentAuthor().username}`} class="text-blue-600" >{parentAuthor().username}</Link></span> }
             <div class="flex my-4 w-full">
-                <div class="w-32 flex justify-center">
+                <div class="w-32 flex flex-col justify-center items-center">
                     <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
                         <span class="text-3xl text-black">{author().name.charAt(0)}</span>
                     </div>

@@ -60,7 +60,7 @@ export const StoreProvider: ParentComponent = (props) => {
       posts.set(post.id, post);
       return post
     }
-    return {} as Post;
+    return { id: "000000000000000000000000", parent_id: "000000000000000000000000" } as Post;
   }
 
   const value = {

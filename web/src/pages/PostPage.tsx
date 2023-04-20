@@ -14,6 +14,7 @@ export default function PostPage() {
   const store = useStore();
   const user_ctx = useUserContext();
   const params = useParams();
+  const [parents, setParents] = createSignal<PostType[]>([]);
   const [post, setPost] = createSignal<PostType>();
   const [author, setAuthor] = createSignal<User>();
   const [replies, setReplies] = createSignal<PostType[]>([]);
@@ -45,6 +46,15 @@ export default function PostPage() {
     }
   }
 
+  function GetParents(parent_id: string) {
+    store.getPost(parent_id).then(post => {
+      setParents(p => [post, ...p]);
+      if (post.parent_id != "000000000000000000000000") {
+        GetParents(post.parent_id);
+      }
+    })
+  }
+
   createEffect(() => {
     store.getPost(params.id).then(p => {
       setPost(p);
@@ -52,18 +62,23 @@ export default function PostPage() {
       store.getUserById(p.author_id).then(u => {
         setAuthor(u)
       })
+      setParents([]);
+      if (p.parent_id != "000000000000000000000000") {
+        GetParents(p.parent_id)
+      }
     });
-  })
+  });
 
   const navigate = useNavigate();
 
   return (
     <div class="flex flex-col w-full h-full overflow-y-scroll p-4 gap-4">
       <div class="flex h-14 items-center">
-        <AiOutlineArrowLeft class="hover:bg-zinc-900 rounded-full" size={32} onclick={() => navigate(-1)} />
+        <AiOutlineArrowLeft class="hover:bg-zinc-900 rounded-full cursor-pointer" size={32} onclick={() => navigate(-1)} />
         <span class="px-6 font-bold text-xl">Post</span>
       </div>
-      <div class="flex items-center gap-4">
+      <For each={parents()}>{p => <Post post={p} thread={true} />}</For>
+      <div class="flex items-center gap-4 px-6">
         <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
           <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
         </div>
@@ -72,7 +87,7 @@ export default function PostPage() {
           <span>@{author()?.username}</span>
         </div>
       </div>
-      <span>{post()?.content}</span>
+      <span class="px-6">{post()?.content}</span>
       {post()?.repost && <PostPreview id={post()?.parent_id || ""} />}
       <div class="flex justify-evenly items-center h-12 border-y border-white">
         <button class="flex items-center justify-evenly gap-1">
@@ -86,7 +101,7 @@ export default function PostPage() {
         </button>
       </div>
       <CreatePost parent_id={params.id} />
-      <For each={replies()}>{post => <Post post={post} />}</For>
+      <For each={replies()}>{post => <Post post={post} thread={false} />}</For>
     </div>
   )
 }
