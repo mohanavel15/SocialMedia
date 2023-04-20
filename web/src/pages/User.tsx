@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { createEffect, createSignal, For, useContext } from "solid-js";
-import { useStore } from "../contexts/store";
+import { StoreProvider, useStore } from "../contexts/store";
 import { UserContext } from "../contexts/usercontext";
 import { User as UserOBJ } from "../models/user";
 import { Post as PostType } from "../models/post"
@@ -13,28 +13,11 @@ export default function User() {
   const [tab, setTab] = createSignal(1);
   const params = useParams();
 
-  const getUser = (username: string) => {
-    if (username == user_ctx?.user()?.username) {
-      setUser(user_ctx?.user())
-    } else {
-      let user = store.users.get(username);
-      if (user === undefined) {
-        fetch("/api/users/" + username).then(res => {
-          if (res.ok) {
-            res.json().then((user: UserOBJ) => { setUser(user); store.users.set(user.id, user); store.users.set(user.username, user) });
-          }
-        })
-      } else {
-        setUser(user)
-      }
-    }
-  }
-
   const [posts, setPost] = createSignal<PostType[]>([])
   const [likes, setLike] = createSignal<PostType[]>([])
   
   createEffect(() => {
-    getUser(params.username)
+    store.getUserByUsername(params.username)
     fetch(`/api/users/${params.username}/posts`).then(res => {
       if (res.ok) {
         res.json().then(res_post => setPost(res_post))
@@ -86,7 +69,7 @@ export default function User() {
           { user_ctx?.user()?.id !== user()?.id && user_ctx?.following.get(user()?.id || "") !== undefined && <button class="absolute right-0 top-0 border-2 border-red-600 text-red-600 rounded h-8 w-24 hover:bg-red-600 hover:text-black cursor-pointer" onclick={() => ToggleFollow(false)}>Unfollow</button> }
         </div>
       </div>
-      <div class="border-b border-white flex items-center justify-evenly h-12">
+      <div class="border-b border-zinc-600 flex items-center justify-evenly h-12">
         <button class="w-1/2 hover:bg-zinc-900 h-full" onclick={() => setTab(1)}>
           <span class={tab() === 1 ? "border-blue-700 border-b-4" : ""}>Posts</span>
         </button>

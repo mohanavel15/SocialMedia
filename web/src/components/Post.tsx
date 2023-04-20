@@ -14,16 +14,9 @@ export default function Post(props: { post: PostType }) {
     const [author, setAuthor] = createSignal({ name: "", username: "" } as User);
     const [parentAuthor, setParentAuthor] = createSignal({ name: "", username: "" } as User);
 
-    let user = store.users.get(props.post.author_id);
-    if (user === undefined) {
-        fetch("/api/users-id/" + props.post.author_id).then(res => {
-            if (res.ok) {
-                res.json().then((user: User) => { setAuthor(user); store.users.set(user.id, user); store.users.set(user.username, user) });
-            }
-        })
-    } else {
-        setAuthor(user)
-    }
+    store.getUserById(props.post.author_id).then(u => {
+        setAuthor(u)
+    })
 
     function GetParentAuthor(parent_id: string) {
         fetch(`/api/posts/${parent_id}/author`).then(res => {

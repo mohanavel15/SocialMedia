@@ -12,42 +12,13 @@ export default function PostPreview(props: { id: string }) {
 
     const navigate = useNavigate();
 
-    const getPost = (post_id: string) => {
-        let post = store.posts.get(post_id);
-
-        if (post !== undefined) {
-            setPost(post);
-            getUser(post.author_id);
-        } else {
-            fetch("/api/posts/" + post_id).then(res => {
-                if (res.ok) {
-                    res.json().then((p: PostType) => {
-                        setPost(p);
-                        store.posts.set(p.id, p);
-                        getUser(p.author_id);
-                    });
-                }
-            })
-        }
-    }
-
-    async function getUser(user_id: string) {
-        let user = store.users.get(user_id);
-        if (user === undefined) {
-            let res = await fetch("/api/users-id/" + user_id)
-            if (res.ok) {
-                let user: UserType = await res.json();
-                setUser(user);
-                store.users.set(user.id, user);
-                store.users.set(user.username, user);
-            }
-        } else {
-            setUser(user)
-        }
-    }
-
     createEffect(() => {
-        getPost(props.id)
+        store.getPost(props.id).then(p => {
+            setPost(p);
+            store.getUserById(p.author_id).then(u => {
+                setUser(u)
+            })
+        });
     })
 
     createEffect(() => {

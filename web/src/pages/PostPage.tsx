@@ -18,42 +18,6 @@ export default function PostPage() {
   const [author, setAuthor] = createSignal<User>();
   const [replies, setReplies] = createSignal<PostType[]>([]);
 
-  const getPost = (post_id: string) => {
-    let post = store.posts.get(post_id);
-
-    if (post !== undefined) {
-      setPost(post);
-      getUser(post.author_id);
-      getReplies(post.id);
-    } else {
-      fetch("/api/posts/" + post_id).then(res => {
-        if (res.ok) {
-          res.json().then((p: PostType) => {
-            setPost(p);
-            store.posts.set(p.id, p);
-            getUser(p.author_id);
-            getReplies(p.id);
-          });
-        }
-      })
-    }
-  }
-
-  async function getUser(user_id: string) {
-    let user = store.users.get(user_id);
-    if (user === undefined) {
-      let res = await fetch("/api/users-id/" + user_id)
-      if (res.ok) {
-        let user: User = await res.json();
-        setAuthor(user);
-        store.users.set(user.id, user);
-        store.users.set(user.username, user);
-      }
-    } else {
-      setAuthor(user)
-    }
-  }
-
   function ToggleLike(add: boolean, post: PostType) {
     fetch(`/api/posts/${post.id}/like`, {
       method: add ? "POST" : "DELETE",
@@ -82,7 +46,13 @@ export default function PostPage() {
   }
 
   createEffect(() => {
-    getPost(params.id);
+    store.getPost(params.id).then(p => {
+      setPost(p);
+      getReplies(p.id);
+      store.getUserById(p.author_id).then(u => {
+        setAuthor(u)
+      })
+    });
   })
 
   const navigate = useNavigate();
@@ -95,7 +65,7 @@ export default function PostPage() {
       </div>
       <div class="flex items-center gap-4">
         <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
-            <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
+          <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
         </div>
         <div class="flex flex-col">
           <Link href={`/users/${author()?.username}`} class="font-bold text-xl">{author()?.name}</Link>
@@ -103,7 +73,7 @@ export default function PostPage() {
         </div>
       </div>
       <span>{post()?.content}</span>
-      { post()?.repost && <PostPreview id={post()?.parent_id || ""} /> }
+      {post()?.repost && <PostPreview id={post()?.parent_id || ""} />}
       <div class="flex justify-evenly items-center h-12 border-y border-white">
         <button class="flex items-center justify-evenly gap-1">
           <FaRegularMessage size={16} />
