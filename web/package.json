@@ -18,6 +18,8 @@
     "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
+    "@dicebear/collection": "^6.0.3",
+    "@dicebear/core": "^6.0.3",
     "@solid-primitives/map": "^0.3.2",
     "@solidjs/router": "^0.8.2",
     "solid-icons": "^1.0.4",

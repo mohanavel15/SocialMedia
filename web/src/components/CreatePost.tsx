@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import { useUserContext } from "../contexts/usercontext"
+import { default_avatar } from "../utils/default_avatar";
 
 export default function CreatePost({ parent_id }: { parent_id: string }) {
     const user_ctx = useUserContext();
@@ -25,9 +26,7 @@ export default function CreatePost({ parent_id }: { parent_id: string }) {
         <div class="border-b border-b-zinc-600 w-full p-6">
             <div class="flex w-full">
                 <div class="w-32 flex justify-center">
-                    <div class="rounded h-12 w-12 bg-white flex items-center justify-center">
-                        <span class="text-xl text-black">{user_ctx?.user()?.name.charAt(0)}</span>
-                    </div>
+			        <img src={user_ctx?.user()?.id || ""} class="rounded h-12 w-12 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(user_ctx?.user()?.id || "") } } />
                 </div>
                 <div class="flex flex-col w-full justify-evenly items-end">
                     <textarea class="w-full bg-zinc-900 h-16 rounded p-2" onchange={(e) => setContent(e.target.value)} value={content()} />

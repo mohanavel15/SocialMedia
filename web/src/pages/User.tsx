@@ -1,10 +1,11 @@
 import { useParams } from "@solidjs/router";
 import { createEffect, createSignal, For, useContext } from "solid-js";
-import { StoreProvider, useStore } from "../contexts/store";
+import { useStore } from "../contexts/store";
 import { UserContext } from "../contexts/usercontext";
 import { User as UserOBJ } from "../models/user";
 import { Post as PostType } from "../models/post"
 import Post from "../components/Post";
+import { default_avatar } from "../utils/default_avatar";
 
 export default function User() {
   const store = useStore();
@@ -17,7 +18,8 @@ export default function User() {
   const [likes, setLike] = createSignal<PostType[]>([])
   
   createEffect(() => {
-    store.getUserByUsername(params.username)
+    store.getUserByUsername(params.username).then(u => setUser(u));
+
     fetch(`/api/users/${params.username}/posts`).then(res => {
       if (res.ok) {
         res.json().then(res_post => setPost(res_post))
@@ -51,9 +53,7 @@ export default function User() {
     <div class="h-full w-full overflow-y-scroll">
       <div class="relative w-[100%] h-[20%] flex p-8">
         <div class="w-[30%] h-full flex items-center justify-center">
-          <div class="border-black border-8 rounded-lg w-32 h-32 bg-white flex items-center justify-center">
-            <span class="text-6xl text-black">{user()?.name.charAt(0)}</span>
-          </div>
+          <img src={user_ctx?.user()?.id || ""} class="border-black border-8 rounded-lg w-32 h-32 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(user_ctx?.user()?.id || "") } } />
         </div>
         <div class="relative w-[70%] h-full flex items-center">
           <div class="flex flex-col">
@@ -78,7 +78,7 @@ export default function User() {
         </button>
       </div>
       <For each={tab() === 1 ? posts() : likes()}>
-        { post => <Post post={post}/> }
+        { post => <Post post={post} thread={false} /> }
       </For>
     </div>
   )

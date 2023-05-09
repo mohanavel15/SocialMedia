@@ -7,6 +7,7 @@ import { useUserContext } from "../contexts/usercontext";
 import { Link, useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import PostPreview from "./PostPreview";
+import { default_avatar } from "../utils/default_avatar";
 
 export default function Post(props: { post: PostType, thread: boolean }) {
     const store = useStore();
@@ -58,9 +59,7 @@ export default function Post(props: { post: PostType, thread: boolean }) {
             { (!props.thread && props.post.parent_id != "000000000000000000000000" && !props.post.repost) && <span class="mt-4 px-6">Replying to <Link href={`/users/${parentAuthor().username}`} class="text-blue-600" >{parentAuthor().username}</Link></span> }
             <div class="flex my-4 w-full">
                 <div class="w-32 flex flex-col justify-center items-center">
-                    <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
-                        <span class="text-3xl text-black">{author().name.charAt(0)}</span>
-                    </div>
+                    <img src={author().id} class="rounded h-16 w-16 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(author().id) } } />
                 </div>
                 <div class="flex flex-col w-full">
                     <div class="flex items-center" >

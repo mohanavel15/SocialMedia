@@ -9,6 +9,7 @@ import { useStore } from "../contexts/store";
 import { useUserContext } from "../contexts/usercontext";
 import { Post as PostType } from "../models/post";
 import { User } from "../models/user";
+import { default_avatar } from "../utils/default_avatar";
 
 export default function PostPage() {
   const store = useStore();
@@ -79,9 +80,7 @@ export default function PostPage() {
       </div>
       <For each={parents()}>{p => <Post post={p} thread={true} />}</For>
       <div class="flex items-center gap-4 px-6">
-        <div class="rounded h-16 w-16 bg-white flex items-center justify-center">
-          <span class="text-3xl text-black">{author()?.name.charAt(0)}</span>
-        </div>
+        <img src={author()?.id || ""} class="rounded h-16 w-16 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(author()?.id || "") } } />
         <div class="flex flex-col">
           <Link href={`/users/${author()?.username}`} class="font-bold text-xl">{author()?.name}</Link>
           <span>@{author()?.username}</span>
