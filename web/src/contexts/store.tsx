@@ -1,11 +1,10 @@
 import { createContext, ParentComponent, useContext } from "solid-js";
 import { User } from "../models/user";
-import { ReactiveMap } from "@solid-primitives/map";
 import { Post } from "../models/post";
 
 type StoreContextType = {
-  users: ReactiveMap<string, User>,
-  posts: ReactiveMap<string, Post>,
+  users: Map<string, User>,
+  posts: Map<string, Post>,
   getPost: (id: string) => Promise<Post>,
   getUserById: (id: string) => Promise<User>,
   getUserByUsername: (username: string) => Promise<User>,
@@ -14,8 +13,8 @@ type StoreContextType = {
 export const StoreContext = createContext<StoreContextType>({} as StoreContextType);
 
 export const StoreProvider: ParentComponent = (props) => {
-  let users = new ReactiveMap<string, User>()
-  let posts = new ReactiveMap<string, Post>()
+  let users = new Map<string, User>()
+  let posts = new Map<string, Post>()
 
   const getUserByUsername = async (username: string) => {
     let user = users.get(username);

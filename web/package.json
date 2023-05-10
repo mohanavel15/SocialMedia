@@ -11,18 +11,17 @@
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.1",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
-    "vite": "^4.2.1",
+    "vite": "^4.3.5",
     "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
     "@dicebear/collection": "^6.0.3",
     "@dicebear/core": "^6.0.3",
-    "@solid-primitives/map": "^0.3.2",
     "@solidjs/router": "^0.8.2",
     "solid-icons": "^1.0.4",
-    "solid-js": "^1.7.3"
+    "solid-js": "^1.7.5"
   }
 }

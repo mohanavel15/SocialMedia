@@ -2,14 +2,13 @@ import { createContext, ParentComponent, useContext } from "solid-js";
 import type { Accessor, Setter } from "solid-js";
 import { User } from "../models/user";
 import { Post } from "../models/post";
-import { ReactiveMap } from "@solid-primitives/map";
 
 export type UserContextType = {
   user: Accessor<User | undefined>
   setUser: Setter<User | undefined>
-  posts: ReactiveMap<string, Post>
-  likes: ReactiveMap<string, Post>
-  following: ReactiveMap<string, User>
+  posts: Map<string, Post>
+  likes: Map<string, Post>
+  following: Map<string, User>
   isLoggedIn: Accessor<boolean>
   setIsLoggedIn: Setter<boolean>
   updateUser: () => void

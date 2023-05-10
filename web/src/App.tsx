@@ -1,4 +1,3 @@
-import { ReactiveMap } from '@solid-primitives/map';
 import { Route, Routes } from '@solidjs/router';
 import { Component, createEffect, createSignal, lazy, onMount } from 'solid-js';
 import { PopUpProvider } from './contexts/popupcontext';
@@ -16,9 +15,9 @@ const PostPage = lazy(() => import("./pages/PostPage"));
 
 const App: Component = () => {
   const [user, setUser] = createSignal<UserType>();
-  let posts = new ReactiveMap<string, PostType>();
-  let likes = new ReactiveMap<string, PostType>();
-  let following = new ReactiveMap<string, UserType>();
+  let posts = new Map<string, PostType>();
+  let likes = new Map<string, PostType>();
+  let following = new Map<string, UserType>();
   const [isLoggedIn, setIsLoggedIn] = createSignal(false);
 
   const getCurrentUser = () => {

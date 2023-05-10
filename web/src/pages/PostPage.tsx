@@ -47,26 +47,20 @@ export default function PostPage() {
     }
   }
 
-  function GetParents(parent_id: string) {
-    store.getPost(parent_id).then(post => {
-      setParents(p => [post, ...p]);
-      if (post.parent_id != "000000000000000000000000") {
-        GetParents(post.parent_id);
-      }
-    })
+  async function GetParents(parent_id: string) {
+    if (parent_id === "000000000000000000000000") return;
+    let post = await store.getPost(parent_id);
+    setParents(p => [post, ...p]);
+    await GetParents(post.parent_id);
   }
 
   createEffect(() => {
     store.getPost(params.id).then(p => {
       setPost(p);
       getReplies(p.id);
-      store.getUserById(p.author_id).then(u => {
-        setAuthor(u)
-      })
+      store.getUserById(p.author_id).then(u => setAuthor(u));
       setParents([]);
-      if (p.parent_id != "000000000000000000000000") {
-        GetParents(p.parent_id)
-      }
+      GetParents(p.parent_id);
     });
   });
 
@@ -99,7 +93,7 @@ export default function PostPage() {
           <span id={`${post()?.id}-like`}>{post()?.likes}</span>
         </button>
       </div>
-      <CreatePost parent_id={params.id} />
+      { user_ctx?.isLoggedIn() && <CreatePost parent_id={params.id} /> }
       <For each={replies()}>{post => <Post post={post} thread={false} />}</For>
     </div>
   )
