@@ -10,7 +10,7 @@ type StoreContextType = {
   getUserByUsername: (username: string) => Promise<User>,
 }
 
-export const StoreContext = createContext<StoreContextType>({} as StoreContextType);
+export const StoreContext = createContext<StoreContextType>(undefined!);
 
 export const StoreProvider: ParentComponent = (props) => {
   let users = new Map<string, User>()

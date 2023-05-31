@@ -29,7 +29,7 @@ export default function CreatePost({ parent_id }: { parent_id: string }) {
 			        <img src={user_ctx?.user()?.id || ""} class="rounded h-12 w-12 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(user_ctx?.user()?.id || "") } } />
                 </div>
                 <div class="flex flex-col w-full justify-evenly items-end">
-                    <textarea class="w-full bg-zinc-900 h-16 rounded p-2" onchange={(e) => setContent(e.target.value)} value={content()} />
+                    <textarea class="w-full bg-zinc-900 h-16 rounded p-2" onInput={(e) => { setContent(e.currentTarget.value); e.currentTarget.style.height = "64px"; e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px` }} value={content()} />
                     <button class="border-2 px-2 rounded mt-2 hover:bg-white hover:text-black" onclick={post}>Post</button>
                 </div>
             </div>

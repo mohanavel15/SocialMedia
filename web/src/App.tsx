@@ -91,8 +91,8 @@ const App: Component = () => {
                 <Route path="/posts/:id" component={PostPage} />
               </Route>
             </Routes>
+            <PopUp />
           </UserProvider>
-          <PopUp />
         </PopUpProvider>
       </StoreProvider>
     </div>

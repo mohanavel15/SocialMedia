@@ -18,7 +18,7 @@ export default function User() {
   const [likes, setLike] = createSignal<PostType[]>([])
   
   createEffect(() => {
-    store.getUserByUsername(params.username).then(u => setUser(u));
+    store?.getUserByUsername(params.username).then(u => setUser(u));
 
     fetch(`/api/users/${params.username}/posts`).then(res => {
       if (res.ok) {
@@ -53,7 +53,7 @@ export default function User() {
     <div class="h-full w-full overflow-y-scroll">
       <div class="relative w-[100%] h-[20%] flex p-8">
         <div class="w-[30%] h-full flex items-center justify-center">
-          <img src={user_ctx?.user()?.id || ""} class="border-black border-8 rounded-lg w-32 h-32 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(user_ctx?.user()?.id || "") } } />
+          <img src={user()?.id || ""} class="border-black border-8 rounded-lg w-32 h-32 bg-white" onError={async (e) => { e.currentTarget.src = await default_avatar(user()?.id || "") } } />
         </div>
         <div class="relative w-[70%] h-full flex items-center">
           <div class="flex flex-col">
