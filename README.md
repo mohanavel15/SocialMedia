@@ -1,2 +1,3 @@
 # SocialMedia
-## Work in progress
+![home](images/home.png)
+![profile](images/profile.png)
